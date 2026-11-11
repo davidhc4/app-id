@@ -36,6 +36,11 @@
                spellcheck="false" maxlength="10" placeholder="ABC123" enterkeyhint="done">
       </div>
       <p id="pista" class="pista" aria-live="polite"></p>
+      <label for="inLugar">Dónde la viste <small>(opcional)</small></label>
+      <input id="inLugar" class="campo" type="text" maxlength="80" placeholder="Ej.: Calle 10 con Av. Central" autocapitalize="sentences" enterkeyhint="next">
+      <div id="chipsLugar" class="chips sugeridos" aria-label="Lugares recientes"></div>
+      <label for="inNota">Descripción <small>(opcional)</small></label>
+      <input id="inNota" class="campo" type="text" maxlength="200" placeholder="Ej.: Mazda rojo, parqueado frente a la tienda" autocapitalize="sentences" enterkeyhint="done">
       <button class="btn primario" type="submit">Guardar placa</button>
     </form>
 
@@ -49,7 +54,7 @@
   <section class="view" id="v-historial">
     <div class="buscador">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
-      <input id="inBuscar" type="search" placeholder="Buscar placa…" autocapitalize="characters" autocomplete="off">
+      <input id="inBuscar" type="search" placeholder="Buscar placa, lugar o descripción…" autocomplete="off">
     </div>
     <div class="chips" role="group" aria-label="Filtro">
       <button class="chip on" data-filtro="todas">Todas</button>
@@ -81,7 +86,7 @@
     </div>
     <div class="card">
       <h2>Importar</h2>
-      <p class="muted">Carga un CSV exportado antes. Columnas: <code>placa, fecha, hora, iso</code>.</p>
+      <p class="muted">Carga un CSV exportado antes. Columnas: <code>placa, fecha, hora, iso, lugar, nota</code>.</p>
       <label class="radio"><input type="radio" name="modoImp" value="combinar" checked> Combinar con lo que ya tengo</label>
       <label class="radio"><input type="radio" name="modoImp" value="reemplazar"> Reemplazar todo</label>
       <button class="btn" id="btnImportar">Elegir archivo CSV</button>

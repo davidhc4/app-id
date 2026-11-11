@@ -5,8 +5,10 @@ App Android para anotar las placas de los carros que ves en la calle. Funciona s
 ## Qué hace
 
 - **Anotar**: escribes la placa y se guarda con la fecha y la hora exactas.
+- **Lugar y descripción** (opcionales): dónde la viste y cualquier detalle. Los lugares usados se sugieren para elegirlos con un toque, y se pueden corregir después desde el detalle de la placa.
+- **Patrones**: la app detecta si una placa se repite el mismo día de la semana, a la misma hora o en el mismo lugar, y muestra tus lugares más frecuentes.
 - **Coincidencias**: si la placa ya estaba anotada, la app te avisa, te dice cuántas veces la has visto, cuándo fue la primera y la última vez, y cuánto tiempo pasó.
-- **Historial**: todos los registros agrupados por día, con buscador y filtro de placas repetidas. Toca una placa para ver todas sus fechas.
+- **Historial**: todos los registros agrupados por día, con buscador (por placa, lugar o descripción) y filtro de placas repetidas. Toca una placa para ver todas sus fechas.
 - **Estadísticas**: totales, placas distintas, registros de hoy / semana / mes, rachas de días, día con más placas, gráficas por día, por día de la semana y por hora, placas más repetidas y coincidencias recientes.
 - **Exportar / importar CSV**: guarda una copia donde quieras y vuelve a cargarla combinando o reemplazando los datos.
 - **Modo claro y oscuro** con un botón, y animaciones fluidas en toda la app.
@@ -33,8 +35,8 @@ El instalador de Android reemplaza la versión anterior y **conserva todas tus p
 `Android/data/com.davidhc4.placas/files/placas.csv` en el almacenamiento del celular. Formato:
 
 ```csv
-placa,fecha,hora,iso
-ABC123,2026-11-11,08:15:42,2026-11-11T08:15:42-05:00
+placa,fecha,hora,iso,lugar,nota
+ABC123,2026-11-11,08:15:42,2026-11-11T08:15:42-05:00,Calle 10,Mazda rojo
 ```
 
 Al importar también se aceptan archivos separados por punto y coma y fechas tipo `DD/MM/AAAA`.
