@@ -1,0 +1,52 @@
+plugins {
+    id "com.android.application"
+}
+
+// Cada compilación automática recibe un número mayor que la anterior,
+// así Android la acepta como actualización de la versión instalada.
+def numero = (System.getenv("GITHUB_RUN_NUMBER") ?: "1") as Integer
+
+android {
+    namespace "com.davidhc4.placas"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.davidhc4.placas"
+        minSdk 26
+        targetSdk 34
+        versionCode numero
+        versionName "1.0.${numero}"
+    }
+
+    // La misma firma en todas las versiones permite actualizar sin desinstalar.
+    // La llave no vive en el repositorio: llega por variables de entorno al compilar.
+    def archivoFirma = System.getenv("FIRMA_ARCHIVO")
+    def claveFirma = System.getenv("FIRMA_CLAVE")
+    signingConfigs {
+        if (archivoFirma && claveFirma) {
+            placas {
+                storeFile file(archivoFirma)
+                storePassword claveFirma
+                keyAlias "placas"
+                keyPassword claveFirma
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.findByName("placas")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}

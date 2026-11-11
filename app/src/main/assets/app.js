@@ -8,6 +8,8 @@
 const CLAVE_CSV = 'placas.csv';
 const CLAVE_TEMA = 'placas.tema';
 const CABECERA = 'placa,fecha,hora,iso';
+/** Puente con la parte nativa de Android (no existe al abrir la interfaz en un navegador). */
+const NATIVO = typeof Android !== 'undefined';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -103,11 +105,15 @@ function deCSV(texto) {
 }
 
 function guardar() {
-  try { localStorage.setItem(CLAVE_CSV, aCSV(registros)); }
-  catch (e) { toast('No se pudo guardar: almacenamiento lleno'); }
+  let ok = true;
+  try {
+    if (NATIVO) ok = Android.guardar(aCSV(registros));
+    else localStorage.setItem(CLAVE_CSV, aCSV(registros));
+  } catch (e) { ok = false; }
+  if (!ok) toast('No se pudo guardar el archivo CSV');
 }
 function cargar() {
-  try { registros = deCSV(localStorage.getItem(CLAVE_CSV)); } catch (e) { registros = []; }
+  try { registros = deCSV(NATIVO ? Android.leer() : localStorage.getItem(CLAVE_CSV)); } catch (e) { registros = []; }
 }
 
 /* ---------------- Estadísticas ---------------- */
@@ -412,31 +418,28 @@ function cerrarDetalle() {
 function pintarDatos() {
   const kb = (new Blob([aCSV(registros)]).size / 1024).toFixed(1).replace('.', ',');
   $('#infoDatos').textContent = `${registros.length.toLocaleString('es')} ${registros.length === 1 ? 'registro' : 'registros'} · ${kb} KB`;
-  $('#btnCompartir').hidden = !navigator.canShare;
+  if (NATIVO) { $('#rutaCsv').textContent = Android.ruta(); $('#versionApp').textContent = 'Versión instalada: ' + Android.version(); }
 }
 const nombreArchivo = () => `placas_${claveDia(Date.now())}.csv`;
-const archivoCSV = () => new File(['﻿' + aCSV(registros)], nombreArchivo(), { type: 'text/csv' });
 
 function exportar() {
   if (!registros.length) return toast('No hay registros para exportar');
-  const url = URL.createObjectURL(archivoCSV());
+  const csv = '\uFEFF' + aCSV(registros);
+  if (NATIVO) return Android.exportar(nombreArchivo(), csv);
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
   const a = Object.assign(document.createElement('a'), { href: url, download: nombreArchivo() });
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
   toast('CSV descargado');
 }
-async function compartir() {
+function compartir() {
   if (!registros.length) return toast('No hay registros para compartir');
-  const f = archivoCSV();
-  try {
-    if (navigator.canShare && navigator.canShare({ files: [f] })) await navigator.share({ files: [f], title: 'Placas' });
-    else exportar();
-  } catch (e) { /* cancelado */ }
+  if (NATIVO) Android.compartir(aCSV(registros));
+  else if (navigator.share) navigator.share({ text: aCSV(registros) }).catch(() => {});
 }
-async function importar(archivo) {
-  if (!archivo) return;
-  let nuevos;
-  try { nuevos = deCSV(await archivo.text()); } catch (e) { return toast('No se pudo leer el archivo'); }
+function importarTexto(texto) {
+  if (texto == null) return toast('No se pudo leer el archivo');
+  const nuevos = deCSV(texto);
   if (!nuevos.length) return toast('El archivo no tiene placas válidas');
   const modo = $('input[name=modoImp]:checked').value;
   if (modo === 'reemplazar') {
@@ -453,6 +456,42 @@ async function importar(archivo) {
   }
   guardar(); refrescar();
 }
+
+/* ---------------- Actualizaciones de la app ---------------- */
+
+let urlActualizacion = null;
+function buscarActualizacion() {
+  if (urlActualizacion) {
+    $('#estadoAct').textContent = 'Descargando… al terminar se abrirá el instalador.';
+    $('#btnActualizar').disabled = true;
+    return Android.instalarActualizacion(urlActualizacion);
+  }
+  $('#estadoAct').textContent = 'Buscando…';
+  Android.buscarActualizacion();
+}
+// Respuestas que llegan desde la parte nativa
+window.alActualizacion = r => {
+  const el = $('#estadoAct'), btn = $('#btnActualizar');
+  if (r.estado === 'nueva') {
+    urlActualizacion = r.url;
+    el.textContent = `Hay una versión nueva: ${r.version}. Tus placas se conservan al actualizar.`;
+    btn.textContent = 'Descargar e instalar';
+    btn.classList.add('primario');
+  } else if (r.estado === 'aldia') el.textContent = 'Ya tienes la última versión.';
+  else el.textContent = 'No se pudo consultar. Revisa tu conexión a internet.';
+};
+window.alDescarga = ok => {
+  $('#btnActualizar').disabled = false;
+  $('#estadoAct').textContent = ok ? 'Confirma la instalación en la ventana del sistema.' : 'Se abrió la descarga en el navegador; abre el archivo para instalar.';
+};
+window.alExportado = ok => toast(ok ? 'CSV guardado' : 'No se pudo guardar el CSV');
+window.alImportar = importarTexto;
+window.alAtras = () => {
+  if (!$('#hoja').hidden) { cerrarDetalle(); return true; }
+  if (vista !== 'anotar') { irA('anotar'); return true; }
+  return false;
+};
+
 function borrarTodo() {
   if (!registros.length) return toast('No hay nada que borrar');
   if (!confirm(`¿Borrar los ${registros.length} registros de este celular? No se puede deshacer.`)) return;
@@ -482,6 +521,7 @@ function irA(nombre) {
 function aplicarTema(t) {
   document.documentElement.dataset.theme = t;
   $('meta[name=theme-color]').content = t === 'dark' ? '#0e1116' : '#f4f5f7';
+  if (NATIVO) Android.tema(t === 'dark');
 }
 function cambiarTema(ev) {
   const nuevo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -529,10 +569,11 @@ function iniciar() {
 
   $('#btnExportar').addEventListener('click', exportar);
   $('#btnCompartir').addEventListener('click', compartir);
-  $('#btnImportar').addEventListener('click', () => $('#inArchivo').click());
-  $('#inArchivo').addEventListener('change', ev => { importar(ev.target.files[0]); ev.target.value = ''; });
+  $('#btnImportar').addEventListener('click', () => NATIVO ? Android.importar() : $('#inArchivo').click());
+  $('#inArchivo').addEventListener('change', async ev => { const f = ev.target.files[0]; ev.target.value = ''; if (f) importarTexto(await f.text()); });
+  $('#btnActualizar').addEventListener('click', buscarActualizacion);
+  $$('.solo-app').forEach(el => { el.hidden = !NATIVO; });
   $('#btnBorrarTodo').addEventListener('click', borrarTodo);
 
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 iniciar();

@@ -125,7 +125,10 @@ main { max-width: 640px; margin: 0 auto; padding: 6px 16px calc(96px + env(safe-
 .fila .btn { flex: 1; }
 .radio { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
 .radio input { width: 20px; height: 20px; accent-color: var(--accent); }
-#btnImportar, #btnBorrarTodo { margin-top: 10px; }
+#btnImportar, #btnBorrarTodo, #btnActualizar { margin-top: 10px; }
+.btn:disabled { opacity: .5; }
+#rutaCsv { word-break: break-all; font-size: .8rem; }
+[hidden] { display: none !important; }
 
 /* Resultado al guardar */
 .aviso {

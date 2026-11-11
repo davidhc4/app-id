@@ -1,6 +1,6 @@
 # Placas
 
-App para anotar las placas de los carros que ves en la calle. Funciona en el celular, sin internet y sin servidores: todo queda guardado en el dispositivo en formato CSV.
+App Android para anotar las placas de los carros que ves en la calle. Funciona sin internet: todo queda guardado en el celular en un archivo CSV.
 
 ## Qué hace
 
@@ -8,10 +8,29 @@ App para anotar las placas de los carros que ves en la calle. Funciona en el cel
 - **Coincidencias**: si la placa ya estaba anotada, la app te avisa, te dice cuántas veces la has visto, cuándo fue la primera y la última vez, y cuánto tiempo pasó.
 - **Historial**: todos los registros agrupados por día, con buscador y filtro de placas repetidas. Toca una placa para ver todas sus fechas.
 - **Estadísticas**: totales, placas distintas, registros de hoy / semana / mes, rachas de días, día con más placas, gráficas por día, por día de la semana y por hora, placas más repetidas y coincidencias recientes.
-- **Exportar / importar CSV**: descarga o comparte el archivo, y vuelve a cargarlo combinando o reemplazando los datos.
+- **Exportar / importar CSV**: guarda una copia donde quieras y vuelve a cargarla combinando o reemplazando los datos.
 - **Modo claro y oscuro** con un botón, y animaciones fluidas en toda la app.
 
-## Formato del CSV
+## Instalar en el celular
+
+1. Desde el celular entra a la sección **Releases** de este repositorio.
+2. Descarga el archivo `placas-vX.X.X.apk` de la versión más reciente.
+3. Ábrelo y acepta la instalación (la primera vez Android pide permitir "instalar apps desconocidas" para el navegador o el gestor de archivos).
+
+## Actualizar
+
+No hay que desinstalar nada. Dos formas:
+
+- Dentro de la app: **Datos → Actualización → Buscar actualización → Descargar e instalar**.
+- O descarga el APK más nuevo desde **Releases** y ábrelo.
+
+El instalador de Android reemplaza la versión anterior y **conserva todas tus placas**. Todas las versiones van firmadas con la misma firma y con un número de versión creciente, por eso se instalan una encima de otra.
+
+> Si desinstalas la app, Android borra también sus datos. Antes de desinstalar, usa **Datos → Guardar CSV**.
+
+## Dónde queda el CSV
+
+`Android/data/com.davidhc4.placas/files/placas.csv` en el almacenamiento del celular. Formato:
 
 ```csv
 placa,fecha,hora,iso
@@ -20,21 +39,17 @@ ABC123,2026-11-11,08:15:42,2026-11-11T08:15:42-05:00
 
 Al importar también se aceptan archivos separados por punto y coma y fechas tipo `DD/MM/AAAA`.
 
-## Usarla en el celular
+## Compilar
 
-1. En GitHub: **Settings → Pages → Deploy from a branch**, elige la rama y la carpeta `/ (root)`.
-2. Abre la dirección que te da GitHub Pages desde el celular.
-3. En el menú del navegador elige **Agregar a pantalla de inicio / Instalar app**.
+Cada cambio que se sube al repositorio compila el APK automáticamente y lo publica en **Releases**.
 
-Desde ese momento se abre como cualquier otra app y funciona sin conexión.
-
-## Probarla en el computador
+El APK se firma con una llave guardada en los secretos del repositorio (**Settings → Secrets and variables → Actions**): `FIRMA_KEYSTORE` (la llave en base64) y `FIRMA_CLAVE` (su contraseña). Hay que conservar siempre la misma llave: si se cambia, Android no deja actualizar encima de la versión instalada. Para compilarlo a mano (con Android SDK y JDK 17):
 
 ```bash
-python3 -m http.server 8000
+FIRMA_ARCHIVO=/ruta/placas.keystore FIRMA_CLAVE=... ./gradlew assembleRelease
 ```
 
-y abre `http://localhost:8000`.
+El APK queda en `app/build/outputs/apk/release/`.
 
 ## Autor
 
