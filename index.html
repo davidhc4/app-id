@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Placas</title>
+<meta name="description" content="Anota las placas de los carros que ves y lleva tus estadísticas.">
+<meta name="theme-color" content="#f4f5f7">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+<script>
+  // Aplica el tema antes de pintar para evitar parpadeos
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('placas.tema'); } catch (e) {}
+    if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
+</head>
+<body>
+<header class="top">
+  <h1 id="titulo">Anotar</h1>
+  <button id="btnTema" class="icon-btn" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">
+    <svg class="sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+    <svg class="luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+  </button>
+</header>
+
+<main>
+  <!-- ANOTAR -->
+  <section class="view active" id="v-anotar">
+    <form id="formPlaca" class="card entrada" autocomplete="off">
+      <label for="inPlaca">Placa del carro</label>
+      <div class="placa-input">
+        <input id="inPlaca" type="text" inputmode="text" autocapitalize="characters" autocorrect="off"
+               spellcheck="false" maxlength="10" placeholder="ABC123" enterkeyhint="done">
+      </div>
+      <p id="pista" class="pista" aria-live="polite"></p>
+      <button class="btn primario" type="submit">Guardar placa</button>
+    </form>
+
+    <div id="resultado" aria-live="polite"></div>
+
+    <h2 class="sub">Últimas anotadas</h2>
+    <ul id="recientes" class="lista"></ul>
+  </section>
+
+  <!-- HISTORIAL -->
+  <section class="view" id="v-historial">
+    <div class="buscador">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <input id="inBuscar" type="search" placeholder="Buscar placa…" autocapitalize="characters" autocomplete="off">
+    </div>
+    <div class="chips" role="group" aria-label="Filtro">
+      <button class="chip on" data-filtro="todas">Todas</button>
+      <button class="chip" data-filtro="repetidas">Solo repetidas</button>
+    </div>
+    <div id="historial"></div>
+  </section>
+
+  <!-- ESTADÍSTICAS -->
+  <section class="view" id="v-stats">
+    <div id="stats"></div>
+  </section>
+
+  <!-- DATOS -->
+  <section class="view" id="v-datos">
+    <div class="card">
+      <h2>Tu archivo CSV</h2>
+      <p class="muted" id="infoDatos"></p>
+      <p class="muted">Los registros se guardan en este celular, en formato CSV, y funcionan sin internet.</p>
+    </div>
+    <div class="card">
+      <h2>Exportar</h2>
+      <p class="muted">Descarga o comparte una copia del CSV con todas tus placas.</p>
+      <div class="fila">
+        <button class="btn primario" id="btnExportar">Descargar CSV</button>
+        <button class="btn" id="btnCompartir">Compartir</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Importar</h2>
+      <p class="muted">Carga un CSV exportado antes. Columnas: <code>placa, fecha, hora, iso</code>.</p>
+      <label class="radio"><input type="radio" name="modoImp" value="combinar" checked> Combinar con lo que ya tengo</label>
+      <label class="radio"><input type="radio" name="modoImp" value="reemplazar"> Reemplazar todo</label>
+      <button class="btn" id="btnImportar">Elegir archivo CSV</button>
+      <input type="file" id="inArchivo" accept=".csv,text/csv,text/plain" hidden>
+    </div>
+    <div class="card">
+      <h2>Borrar</h2>
+      <p class="muted">Elimina todos los registros de este celular. Exporta antes si quieres conservarlos.</p>
+      <button class="btn peligro" id="btnBorrarTodo">Borrar todo</button>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Secciones">
+  <span class="tab-pill" aria-hidden="true"></span>
+  <button class="tab on" data-view="anotar" data-titulo="Anotar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Anotar</span>
+  </button>
+  <button class="tab" data-view="historial" data-titulo="Historial">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Historial</span>
+  </button>
+  <button class="tab" data-view="stats" data-titulo="Estadísticas">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>Estadísticas</span>
+  </button>
+  <button class="tab" data-view="datos" data-titulo="Datos">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg><span>Datos</span>
+  </button>
+</nav>
+
+<!-- Detalle de una placa -->
+<div class="fondo" id="fondo" hidden></div>
+<aside class="hoja" id="hoja" role="dialog" aria-modal="true" aria-labelledby="hojaPlaca" hidden>
+  <div class="asa" aria-hidden="true"></div>
+  <div id="hojaCuerpo"></div>
+  <button class="btn" id="btnCerrarHoja">Cerrar</button>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

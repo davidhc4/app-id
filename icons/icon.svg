@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0e1116"/>
+  <rect x="96" y="176" width="320" height="160" rx="26" fill="#ffd426" stroke="#15181d" stroke-width="12"/>
+  <text x="256" y="290" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="700" font-size="96" letter-spacing="6" fill="#15181d">ABC</text>
+</svg>
