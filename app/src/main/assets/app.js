@@ -506,7 +506,7 @@ function cerrarDetalle() {
 function pintarDatos() {
   const kb = (new Blob([aCSV(registros)]).size / 1024).toFixed(1).replace('.', ',');
   $('#infoDatos').textContent = `${registros.length.toLocaleString('es')} ${registros.length === 1 ? 'registro' : 'registros'} · ${kb} KB`;
-  if (NATIVO) { $('#rutaCsv').textContent = Android.ruta(); $('#versionApp').textContent = 'Versión instalada: ' + Android.version(); }
+  if (NATIVO) { $('#rutaCsv').textContent = Android.ruta(); $('#versionApp').textContent = 'Versión instalada: ' + Android.version(); $('#versionAcerca').textContent = 'Versión ' + Android.version(); }
 }
 const nombreArchivo = () => `placas_${claveDia(Date.now())}.csv`;
 
@@ -610,11 +610,13 @@ function aplicarTema(t) {
   document.documentElement.dataset.theme = t;
   $('meta[name=theme-color]').content = t === 'dark' ? '#0e1116' : '#f4f5f7';
   if (NATIVO) Android.tema(t === 'dark');
+  $('#btnTema').setAttribute('aria-checked', t === 'dark');
+  $('#temaTxt').textContent = t === 'dark' ? 'Tema oscuro activado' : 'Tema claro activado';
 }
 function cambiarTema(ev) {
   const nuevo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   try { localStorage.setItem(CLAVE_TEMA, nuevo); } catch (e) {}
-  const r = ev.currentTarget.getBoundingClientRect(), raiz = document.documentElement.style;
+  const r = $('.interruptor', ev.currentTarget).getBoundingClientRect(), raiz = document.documentElement.style;
   raiz.setProperty('--tx', r.left + r.width / 2 + 'px');
   raiz.setProperty('--ty', r.top + r.height / 2 + 'px');
   if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(() => aplicarTema(nuevo));

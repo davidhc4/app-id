@@ -293,3 +293,19 @@ main { max-width: 640px; margin: 0 auto; padding: 6px 16px calc(96px + env(safe-
 .edita { display: grid; gap: 8px; margin-top: 8px; }
 .edita .fila { margin-top: 0; }
 .datos dd { overflow-wrap: anywhere; }
+
+/* Ajustes */
+#v-datos .sub:first-child { margin-top: 8px; }
+.ajuste { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; min-height: 48px; background: none; border: 0; padding: 0; text-align: left; }
+.ajuste b { display: block; font-weight: 600; }
+.ajuste small { color: var(--muted); font-size: .88rem; }
+.interruptor { flex: none; position: relative; width: 52px; height: 30px; border-radius: 999px; background: var(--line); transition: background-color .3s var(--ease); }
+.interruptor::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .35s var(--spring); }
+.ajuste[aria-checked="true"] .interruptor { background: var(--accent); }
+.ajuste[aria-checked="true"] .interruptor::after { transform: translateX(22px); }
+.ajuste:active .interruptor::after { width: 28px; }
+.acerca { display: flex; flex-direction: column; align-items: center; padding: 22px 16px; text-align: center; }
+.sello { width: 64px; height: 64px; margin-bottom: 12px; }
+.acerca b { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+.acerca span { margin-top: 2px; font-size: .86rem; color: var(--muted); }
+.acerca span:empty { display: none; }

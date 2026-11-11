@@ -20,10 +20,6 @@
 <body>
 <header class="top">
   <h1 id="titulo">Anotar</h1>
-  <button id="btnTema" class="icon-btn" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">
-    <svg class="sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
-    <svg class="luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
-  </button>
 </header>
 
 <main>
@@ -68,8 +64,17 @@
     <div id="stats"></div>
   </section>
 
-  <!-- DATOS -->
+  <!-- AJUSTES -->
   <section class="view" id="v-datos">
+    <h2 class="sub">Apariencia</h2>
+    <div class="card">
+      <button id="btnTema" class="ajuste" role="switch" aria-checked="false">
+        <span><b>Modo oscuro</b><small id="temaTxt">Tema claro activado</small></span>
+        <i class="interruptor" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <h2 class="sub">Datos</h2>
     <div class="card">
       <h2>Tu archivo CSV</h2>
       <p class="muted" id="infoDatos"></p>
@@ -92,16 +97,31 @@
       <button class="btn" id="btnImportar">Elegir archivo CSV</button>
       <input type="file" id="inArchivo" accept=".csv,text/csv,text/plain" hidden>
     </div>
-    <div class="card solo-app">
-      <h2>Actualización</h2>
-      <p class="muted" id="versionApp"></p>
-      <p class="muted" id="estadoAct">La app se actualiza encima de la instalada, sin perder tus placas.</p>
-      <button class="btn" id="btnActualizar">Buscar actualización</button>
-    </div>
     <div class="card">
       <h2>Borrar</h2>
       <p class="muted">Elimina todos los registros de este celular. Exporta antes si quieres conservarlos.</p>
       <button class="btn peligro" id="btnBorrarTodo">Borrar todo</button>
+    </div>
+
+    <h2 class="sub solo-app">Actualización</h2>
+    <div class="card solo-app">
+      <h2>Buscar versión nueva</h2>
+      <p class="muted" id="versionApp"></p>
+      <p class="muted" id="estadoAct">La app se actualiza encima de la instalada, sin perder tus placas.</p>
+      <button class="btn" id="btnActualizar">Buscar actualización</button>
+    </div>
+
+    <h2 class="sub">Acerca de</h2>
+    <div class="card acerca">
+      <svg class="sello" viewBox="0 0 100 100" role="img" aria-label="Sello del autor">
+        <defs><linearGradient id="selloFondo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#181A20"/><stop offset="1" stop-color="#0E0F13"/></linearGradient></defs>
+        <rect width="100" height="100" rx="24" fill="url(#selloFondo)" stroke="none"/>
+        <rect x="2.25" y="2.25" width="95.5" height="95.5" rx="21.75" fill="none" stroke="#3A3F4B" stroke-width="1.5"/>
+        <rect x="30" y="27" width="11" height="46" rx="2" fill="#F2F3F5" stroke="none"/>
+        <path d="M47 32.5A19 17.5 0 0 1 47 67.5" fill="none" stroke="#F2F3F5" stroke-width="11" stroke-linecap="butt"/>
+      </svg>
+      <b>Placas</b>
+      <span id="versionAcerca"></span>
     </div>
   </section>
 </main>
@@ -117,8 +137,8 @@
   <button class="tab" data-view="stats" data-titulo="Estadísticas">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>Estadísticas</span>
   </button>
-  <button class="tab" data-view="datos" data-titulo="Datos">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg><span>Datos</span>
+  <button class="tab" data-view="datos" data-titulo="Ajustes">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg><span>Ajustes</span>
   </button>
 </nav>
 

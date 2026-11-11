@@ -11,7 +11,8 @@ App Android para anotar las placas de los carros que ves en la calle. Funciona s
 - **Historial**: todos los registros agrupados por día, con buscador (por placa, lugar o descripción) y filtro de placas repetidas. Toca una placa para ver todas sus fechas.
 - **Estadísticas**: totales, placas distintas, registros de hoy / semana / mes, rachas de días, día con más placas, gráficas por día, por día de la semana y por hora, placas más repetidas y coincidencias recientes.
 - **Exportar / importar CSV**: guarda una copia donde quieras y vuelve a cargarla combinando o reemplazando los datos.
-- **Modo claro y oscuro** con un botón, y animaciones fluidas en toda la app.
+- **Ajustes**: modo claro y oscuro, exportar / importar, actualización de la app y, al final, la versión instalada.
+- Animaciones fluidas en toda la app.
 
 ## Instalar en el celular
 
@@ -23,12 +24,12 @@ App Android para anotar las placas de los carros que ves en la calle. Funciona s
 
 No hay que desinstalar nada. Dos formas:
 
-- Dentro de la app: **Datos → Actualización → Buscar actualización → Descargar e instalar**.
+- Dentro de la app: **Ajustes → Actualización → Buscar actualización → Descargar e instalar**.
 - O descarga el APK más nuevo desde **Releases** y ábrelo.
 
 El instalador de Android reemplaza la versión anterior y **conserva todas tus placas**. Todas las versiones van firmadas con la misma firma y con un número de versión creciente, por eso se instalan una encima de otra.
 
-> Si desinstalas la app, Android borra también sus datos. Antes de desinstalar, usa **Datos → Guardar CSV**.
+> Si desinstalas la app, Android borra también sus datos. Antes de desinstalar, usa **Ajustes → Guardar CSV**.
 
 ## Dónde queda el CSV
 
